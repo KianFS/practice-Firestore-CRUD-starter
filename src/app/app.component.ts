@@ -7,7 +7,7 @@ import { User, UserService } from './user.service';
   selector: 'app-root',
   imports: [RouterOutlet, FormsModule],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.css',
 })
 export class AppComponent {
   title = 'practice-firestore-crud';
@@ -19,21 +19,40 @@ export class AppComponent {
   user: User = {
     id: '',
     name: '',
-    email: ''
-  }
+    email: '',
+  };
 
   // This is the array of users that will be displayed in the template
-  users: User[] = []
-
+  users: User[] = [];
+  editUserId: string | null = null;
 
   // This is the hook method that will be called when the component is initialized
-  ngOnInit(){
-   
+  ngOnInit() {
+    this.userService.getUsers().subscribe((data) => (this.users = data));
   }
 
-
-  addUser(){
-    
+  addUser() {
+    this.userService.addUser(this.user);
+  }
+  setEditUser(editUser: User) {
+    this.editUserId = editUser.id;
+    this.user = { ...editUser };
   }
 
+  deleteUser(delUser: User) {
+    this.userService.deleteUser(delUser.id);
+  }
+  updateUser() {
+    this.userService.updateUser(this.user);
+    this.resetForm();
+  }
+
+  resetForm() {
+    this.user = {
+      id: '',
+      name: '',
+      email: '',
+    };
+    this.editUserId = null;
+  }
 }
